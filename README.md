@@ -1,14 +1,18 @@
 # Surya Siddhanta — Explainer App
 
-A single-page static site explaining the 14 chapters of the Surya Siddhanta, an ancient Sanskrit astronomy treatise — with an animated geocentric orrery, an interactive sine-table demo, accuracy comparisons against modern astronomy, a glossary, and a 10-question quiz.
+A static site explaining the 14 chapters of the Surya Siddhanta, an ancient Sanskrit astronomy treatise — with an animated geocentric orrery, an interactive sine-table demo, accuracy comparisons against modern astronomy, a glossary, and a 10-question quiz.
 
-No build step, no dependencies, no server. It's just `index.html`.
+Two pages, no build step, no dependencies, no server:
+- `index.html` — English
+- `hindi.html` — Hindi (हिंदी)
+
+Each page has a language-switch link in the top nav so visitors can jump between them.
 
 ## Deploy
 
 **GitHub**
 1. Create a new repo (e.g. `surya-siddhanta`).
-2. Upload `index.html` and `vercel.json` to the root of the repo.
+2. Upload `index.html`, `hindi.html`, and `vercel.json` to the root of the repo.
 3. Commit.
 
 **Vercel**
