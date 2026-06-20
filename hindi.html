@@ -329,7 +329,7 @@
   <div class="orrery-wrap">
     <div id="orreryMount"></div>
   </div>
-  <p class="orrery-caption">पृथ्वी केंद्र में स्थिर है, जैसा ग्रंथ में वर्णित है — परिक्रमा-क्रम सटीक है, गति और दूरियाँ दृश्यता हेतु संकुचित की गई हैं</p>
+  <p class="orrery-caption">यहाँ स्पष्टता हेतु सूर्य को केंद्र में दिखाया गया है — ग्रंथ स्वयं, अन्य सभी पूर्व-कोपरनिकस खगोलशास्त्र की तरह, पृथ्वी को केंद्र में स्थिर मानता है (नीचे "अवलोकन" देखें)। परिक्रमा-क्रम सटीक है; गति और दूरियाँ दृश्यता हेतु संकुचित की गई हैं।</p>
 </header>
 
 <main>
@@ -561,16 +561,16 @@ const quiz = [
 /* ---------------- ORRERY ---------------- */
 (function(){
   const bodies = [
-    {name:"Moon", period:27.322, r:45, size:5, color:"#E8E2CF"},
-    {name:"Mercury", period:87.97, r:68, size:4.5, color:"#B7AE96"},
-    {name:"Venus", period:224.7, r:91, size:6.5, color:"#E3B05C"},
-    {name:"Sun", period:365.26, r:114, size:9, color:"#D4A437", glow:true},
-    {name:"Mars", period:687, r:137, size:5.5, color:"#B5503A"},
-    {name:"Jupiter", period:4332.6, r:160, size:8, color:"#D7C9A3"},
-    {name:"Saturn", period:10759.2, r:183, size:7, color:"#C9B776", ring:true}
+    {name:"Mercury", period:87.97, r:55, size:4.5, color:"#B7AE96"},
+    {name:"Venus", period:224.7, r:80, size:6.5, color:"#E3B05C"},
+    {name:"Earth", period:365.25, r:110, size:7, color:"#9bb7d4", moon:true},
+    {name:"Mars", period:687, r:140, size:5.5, color:"#B5503A"},
+    {name:"Jupiter", period:4332.6, r:170, size:8, color:"#D7C9A3"},
+    {name:"Saturn", period:10759.2, r:200, size:7, color:"#C9B776", ring:true}
   ];
-  const baseDur = 4, basePeriod = 27.322;
-  const cx=300, cy=210, ns='http://www.w3.org/2000/svg';
+  const moonPeriod = 27.322;
+  const baseDur = 6, basePeriod = 365.25;
+  const cx=300, cy=215, ns='http://www.w3.org/2000/svg';
 
   function el(tag, attrs){
     const e = document.createElementNS(ns, tag);
@@ -578,16 +578,16 @@ const quiz = [
     return e;
   }
 
-  const svg = el('svg', {viewBox:'0 0 600 430', width:'100%', height:'auto', id:'orrerySvg'});
+  const svg = el('svg', {viewBox:'0 0 600 440', width:'100%', height:'auto', id:'orrerySvg'});
 
   bodies.forEach(b=>{
     svg.appendChild(el('circle', {cx, cy, r:b.r, fill:'none', stroke:'#3a4670', 'stroke-width':1, 'stroke-dasharray':'2 5', opacity:0.5}));
   });
 
-  const earthGlow = el('circle', {cx, cy, r:13, fill:'#2c3a66'});
-  svg.appendChild(earthGlow);
-  svg.appendChild(el('circle', {cx, cy, r:8, fill:'#9bb7d4'}));
-  svg.appendChild(el('circle', {cx, cy, r:8, fill:'none', stroke:'#D4A437', 'stroke-width':1}));
+  svg.appendChild(el('circle', {cx, cy, r:26, fill:'#D4A437', opacity:0.18}));
+  svg.appendChild(el('circle', {cx, cy, r:18, fill:'#D4A437', opacity:0.35}));
+  svg.appendChild(el('circle', {cx, cy, r:13, fill:'#D4A437'}));
+  svg.appendChild(el('circle', {cx, cy, r:13, fill:'none', stroke:'#9B3A2E', 'stroke-width':1}));
 
   bodies.forEach(b=>{
     const dur = (baseDur * Math.sqrt(b.period/basePeriod)).toFixed(2);
@@ -599,13 +599,27 @@ const quiz = [
     });
     g.appendChild(at);
 
-    if(b.glow){
-      g.appendChild(el('circle', {cx:cx+b.r, cy, r:b.size+5, fill:b.color, opacity:0.25}));
-    }
     if(b.ring){
       g.appendChild(el('ellipse', {cx:cx+b.r, cy, rx:b.size+5, ry:b.size*0.45, fill:'none', stroke:b.color, 'stroke-width':1.2, opacity:0.8}));
     }
+    if(b.moon){
+      g.appendChild(el('circle', {cx:cx+b.r, cy, r:16, fill:'none', stroke:'#3a4670', 'stroke-width':0.7, 'stroke-dasharray':'1 3', opacity:0.5}));
+    }
     g.appendChild(el('circle', {cx:cx+b.r, cy, r:b.size, fill:b.color}));
+
+    if(b.moon){
+      const moonDur = (baseDur * Math.sqrt(moonPeriod/basePeriod)).toFixed(2);
+      const mg = el('g', {});
+      const mat = el('animateTransform', {
+        attributeName:'transform', type:'rotate',
+        from:`0 ${cx+b.r} ${cy}`, to:`360 ${cx+b.r} ${cy}`,
+        dur: moonDur+'s', repeatCount:'indefinite'
+      });
+      mg.appendChild(mat);
+      mg.appendChild(el('circle', {cx:cx+b.r+16, cy, r:2.5, fill:'#E8E2CF'}));
+      g.appendChild(mg);
+    }
+
     svg.appendChild(g);
   });
 
