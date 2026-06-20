@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>सूर्य सिद्धान्त — सूर्य का गणित</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+Devanagari:wght@500;600;700;900&family=Noto+Sans+Devanagari:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE3C7;
+    --paper-deep:#E2D4AC;
+    --paper-line:#cdbb8d;
+    --ink:#2B2014;
+    --ink-soft:#5C4A35;
+    --sky:#16213F;
+    --sky-deep:#0B1228;
+    --brass:#A6791F;
+    --brass-bright:#D4A437;
+    --vermillion:#9B3A2E;
+    --vermillion-bright:#C1492F;
+    --star:#F0E6C8;
+    --good:#3F6B4C;
+    --bad:#9B3A2E;
+    --maxw:1080px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Serif 4','Noto Serif Devanagari', serif;
+    font-size:17px;
+    line-height:1.7;
+  }
+  h1,h2,h3,h4{
+    font-family:'Fraunces','Noto Serif Devanagari', serif;
+    font-weight:700;
+    margin:0 0 .4em;
+    color:var(--ink);
+  }
+  .mono{
+    font-family:'JetBrains Mono','Noto Sans Devanagari', monospace;
+  }
+  a{color:var(--vermillion);}
+  ::selection{background:var(--brass-bright);color:var(--ink);}
+  :focus-visible{outline:3px solid var(--vermillion-bright);outline-offset:2px;}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
+  section{padding:84px 0;}
+  section + section{border-top:1px solid var(--paper-line);}
+
+  .eyebrow{
+    font-family:'JetBrains Mono','Noto Sans Devanagari', monospace;
+    font-size:13px;
+    letter-spacing:.06em;
+    color:var(--brass);
+    font-weight:600;
+    margin-bottom:14px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--brass);display:inline-block;}
+
+  p.lede{font-size:19px;color:var(--ink-soft);max-width:640px;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(237,227,199,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--paper-line);
+  }
+  .nav-inner{
+    max-width:var(--maxw);margin:0 auto;padding:0 28px;
+    display:flex;gap:4px;overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .nav-inner::-webkit-scrollbar{display:none;}
+  nav a{
+    flex:0 0 auto;
+    white-space:nowrap;
+    text-decoration:none;
+    color:var(--ink-soft);
+    font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;
+    font-size:13.5px;
+    letter-spacing:.02em;
+    padding:16px 14px;
+    border-bottom:3px solid transparent;
+    transition:color .2s, border-color .2s;
+  }
+  nav a:hover{color:var(--vermillion);}
+  nav a.active{color:var(--vermillion);border-bottom-color:var(--vermillion);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:radial-gradient(ellipse at 50% -10%, #1c2c52 0%, var(--sky) 45%, var(--sky-deep) 100%);
+    color:var(--star);
+    position:relative;
+    overflow:hidden;
+    padding:0;
+  }
+  .hero-stars{position:absolute;inset:0;}
+  .hero-content{
+    position:relative;
+    max-width:var(--maxw);margin:0 auto;padding:68px 28px 30px;
+    text-align:center;
+  }
+  .hero-title-deva{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--brass-bright);
+    margin-bottom:16px;
+    font-weight:600;
+  }
+  .hero h1{
+    color:var(--star);
+    font-family:'Noto Serif Devanagari','Fraunces',serif;
+    font-size:clamp(40px,7vw,70px);
+    font-weight:900;
+    margin-bottom:14px;
+  }
+  .hero p.sub{
+    max-width:580px;margin:0 auto 8px;
+    font-size:18px;
+    color:#cfd3e6;
+  }
+  .orrery-wrap{
+    max-width:680px;margin:0 auto;
+    padding:10px 10px 4px;
+  }
+  .orrery-caption{
+    text-align:center;
+    font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;
+    font-size:12px;
+    letter-spacing:.01em;
+    color:#8d93b8;
+    padding-bottom:50px;
+    max-width:560px;margin:0 auto;
+  }
+
+  /* ---------- OVERVIEW ---------- */
+  .stat-row{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+    margin-top:48px;
+  }
+  .stat{
+    background:var(--paper-deep);
+    border:1px solid var(--paper-line);
+    border-radius:4px;
+    padding:20px 16px;
+  }
+  .stat .num{
+    font-family:'Fraunces',serif;font-weight:700;font-size:34px;color:var(--vermillion);
+    line-height:1;
+  }
+  .stat .label{font-size:13.5px;color:var(--ink-soft);margin-top:6px;font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;}
+
+  .two-col{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;margin-top:36px;align-items:start;}
+  .pull-card{
+    background:var(--sky);color:var(--star);
+    border-radius:6px;padding:28px 26px;
+    font-family:'Fraunces','Noto Serif Devanagari',serif;
+  }
+  .pull-card .tag{font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;font-size:12px;letter-spacing:.04em;color:var(--brass-bright);margin-bottom:10px;}
+  .pull-card p{font-size:18px;line-height:1.6;margin:0 0 10px;}
+  .pull-card .src{font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;font-size:12px;color:#9aa0c4;}
+
+  /* ---------- CHAPTERS ---------- */
+  .chapter-grid{display:flex;flex-direction:column;gap:10px;margin-top:36px;}
+  details.chapter{
+    background:var(--paper-deep);
+    border:1px solid var(--paper-line);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  details.chapter summary{
+    list-style:none;cursor:pointer;
+    display:flex;align-items:center;gap:20px;
+    padding:18px 22px;
+  }
+  details.chapter summary::-webkit-details-marker{display:none;}
+  .ch-num{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;color:var(--brass);
+    border:1px solid var(--brass);border-radius:50%;
+    width:34px;height:34px;flex:0 0 34px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:600;
+  }
+  .ch-title{flex:1;font-family:'Fraunces','Noto Serif Devanagari',serif;font-weight:600;font-size:18px;}
+  .ch-chevron{
+    font-size:13px;color:var(--ink-soft);transition:transform .25s;
+  }
+  details.chapter[open] .ch-chevron{transform:rotate(90deg);}
+  .ch-body{padding:0 22px 22px 76px;color:var(--ink-soft);font-size:15.5px;max-width:620px;}
+
+  /* ---------- ACCURACY ---------- */
+  .gauge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:40px;}
+  .gauge-card{background:var(--paper-deep);border:1px solid var(--paper-line);border-radius:4px;padding:18px;text-align:center;}
+  .gauge-card .planet-name{font-family:'Fraunces','Noto Serif Devanagari',serif;font-weight:700;font-size:16px;margin-bottom:6px;}
+  .gauge-card svg{width:100%;height:auto;}
+  .gauge-err{font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;font-size:13px;margin-top:4px;}
+  .year-compare{
+    margin-top:46px;background:var(--sky);color:var(--star);border-radius:6px;padding:30px 28px;
+  }
+  .year-compare h3{color:var(--star);font-family:'Fraunces','Noto Serif Devanagari',serif;}
+  .year-row{display:flex;justify-content:space-between;font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;font-size:14px;padding:8px 0;border-bottom:1px dashed #3a4670;gap:20px;}
+  .year-row:last-child{border-bottom:none;}
+  .year-row .v{color:var(--brass-bright);white-space:nowrap;}
+
+  /* ---------- SINE TABLE ---------- */
+  .sine-box{background:var(--paper-deep);border:1px solid var(--paper-line);border-radius:6px;padding:30px;margin-top:40px;}
+  input[type=range]{width:100%;accent-color:var(--vermillion);}
+  .sine-readout{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px;}
+  .sine-readout div{background:var(--paper);border:1px solid var(--paper-line);border-radius:4px;padding:12px;text-align:center;}
+  .sine-readout .v{font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;font-size:18px;font-weight:600;color:var(--vermillion);}
+  .sine-readout .l{font-size:12px;color:var(--ink-soft);margin-top:4px;font-family:'Noto Sans Devanagari',sans-serif;}
+
+  /* ---------- TIME ---------- */
+  .time-ladder{margin-top:40px;display:flex;flex-direction:column-reverse;gap:10px;}
+  .time-step{
+    display:flex;align-items:center;gap:16px;
+    background:var(--paper-deep);border:1px solid var(--paper-line);border-radius:4px;
+    padding:14px 18px;
+  }
+  .time-step .name{font-family:'Fraunces','Noto Serif Devanagari',serif;font-weight:600;width:180px;flex:0 0 180px;}
+  .time-step .modern{font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;color:var(--vermillion);font-size:14px;width:150px;flex:0 0 150px;}
+  .time-step .note{color:var(--ink-soft);font-size:14.5px;}
+  .time-tier-label{font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;font-size:12px;letter-spacing:.04em;color:var(--brass);margin:18px 0 4px;}
+
+  /* ---------- COSMOS ---------- */
+  .cosmos-grid{margin-top:40px;display:flex;flex-direction:column;gap:14px;}
+  .cosmos-row{display:grid;grid-template-columns:160px 1fr;gap:18px;align-items:center;}
+  .cosmos-row .name{font-family:'Fraunces','Noto Serif Devanagari',serif;font-weight:600;}
+  .bar-track{position:relative;height:34px;background:var(--paper-deep);border:1px solid var(--paper-line);border-radius:4px;overflow:hidden;}
+  .bar-fill{position:absolute;top:0;left:0;height:100%;background:var(--brass);opacity:.55;}
+  .bar-actual{position:absolute;top:0;height:100%;width:2px;background:var(--vermillion);}
+  .bar-label{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;font-size:11.5px;color:var(--ink-soft);}
+  .legend{display:flex;gap:24px;margin-top:14px;font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;font-size:12.5px;color:var(--ink-soft);flex-wrap:wrap;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:12px;height:12px;border-radius:2px;display:inline-block;}
+
+  .quote-card{
+    margin-top:40px;
+    border-left:3px solid var(--vermillion);
+    padding:6px 0 6px 22px;
+    color:var(--ink-soft);
+    font-style:italic;
+    font-size:17px;
+  }
+
+  /* ---------- GLOSSARY ---------- */
+  .gloss-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:36px;}
+  .gloss-item dt{font-family:'Fraunces','Noto Serif Devanagari',serif;font-weight:700;color:var(--vermillion);font-size:17px;margin-bottom:4px;}
+  .gloss-item dd{margin:0;color:var(--ink-soft);font-size:15px;}
+
+  /* ---------- QUIZ ---------- */
+  .quiz-card{background:var(--paper-deep);border:1px solid var(--paper-line);border-radius:6px;padding:22px;margin-bottom:14px;}
+  .quiz-q{font-family:'Fraunces','Noto Serif Devanagari',serif;font-weight:600;font-size:17px;margin-bottom:12px;}
+  .quiz-opts label{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 10px;border-radius:4px;cursor:pointer;
+    font-size:15.5px;
+  }
+  .quiz-opts label:hover{background:var(--paper);}
+  .quiz-card.correct{border-color:var(--good);}
+  .quiz-card.incorrect{border-color:var(--bad);}
+  .quiz-feedback{font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;font-size:13px;margin-top:10px;display:none;}
+  .quiz-card.correct .quiz-feedback{display:block;color:var(--good);}
+  .quiz-card.incorrect .quiz-feedback{display:block;color:var(--bad);}
+  .quiz-btn{
+    font-family:'JetBrains Mono','Noto Sans Devanagari',monospace;
+    background:var(--vermillion);color:var(--paper);
+    border:none;border-radius:4px;
+    padding:14px 28px;font-size:14.5px;letter-spacing:.02em;
+    cursor:pointer;
+  }
+  .quiz-btn:hover{background:var(--vermillion-bright);}
+  .quiz-score{font-family:'Fraunces','Noto Serif Devanagari',serif;font-size:22px;font-weight:700;margin-top:18px;color:var(--vermillion);display:none;}
+
+  footer{padding:46px 0 70px;text-align:center;color:var(--ink-soft);font-size:13.5px;}
+  footer a{color:var(--ink-soft);text-decoration:underline;}
+
+  @media (max-width:760px){
+    section{padding:56px 0;}
+    .stat-row{grid-template-columns:repeat(2,1fr);}
+    .two-col{grid-template-columns:1fr;}
+    .gauge-grid{grid-template-columns:repeat(2,1fr);}
+    .sine-readout{grid-template-columns:repeat(2,1fr);}
+    .gloss-grid{grid-template-columns:1fr;}
+    .ch-body{padding-left:22px;}
+    .time-step{flex-wrap:wrap;}
+    .time-step .name,.time-step .modern{width:auto;flex:1 1 140px;}
+    .cosmos-row{grid-template-columns:1fr;}
+  }
+  @media (max-width:480px){
+    .gauge-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner" id="navInner">
+    <a href="#overview">अवलोकन</a>
+    <a href="#chapters">14 अध्याय</a>
+    <a href="#accuracy">सटीकता</a>
+    <a href="#sine">ज्या सारणी</a>
+    <a href="#time">समय गणना</a>
+    <a href="#cosmos">विश्व-रचना</a>
+    <a href="#glossary">शब्दावली</a>
+    <a href="#quiz">प्रश्नोत्तरी</a>
+    <a href="index.html" style="margin-left:auto;color:var(--vermillion);">English</a>
+  </div>
+</nav>
+
+<header class="hero" id="hero">
+  <svg class="hero-stars" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true"></svg>
+  <div class="hero-content">
+    <div class="hero-title-deva">SURYA SIDDHANTA</div>
+    <h1>सूर्य सिद्धान्त</h1>
+    <p class="sub">चौदह अध्याय और पाँच सौ संस्कृत श्लोक, एक भूकेन्द्रीय ब्रह्माण्ड पर — और यह गणित आज भी आपके पंचांग के भीतर चुपचाप काम कर रहा है।</p>
+  </div>
+  <div class="orrery-wrap">
+    <div id="orreryMount"></div>
+  </div>
+  <p class="orrery-caption">पृथ्वी केंद्र में स्थिर है, जैसा ग्रंथ में वर्णित है — परिक्रमा-क्रम सटीक है, गति और दूरियाँ दृश्यता हेतु संकुचित की गई हैं</p>
+</header>
+
+<main>
+
+  <section id="overview">
+    <div class="wrap">
+      <div class="eyebrow">यह क्या है</div>
+      <h2>वह ग्रंथ जो सूर्यदेव द्वारा कथित माना जाता है</h2>
+      <p class="lede">परंपरा के अनुसार सूर्यदेव के एक दूत ने सत्ययुग के अंत में असुर मयासुर को यह खगोलशास्त्र बताया था। आधुनिक विद्वानों की कहानी अधिक व्यावहारिक है — और दोनों को जानना उचित है।</p>
+
+      <div class="stat-row">
+        <div class="stat"><div class="num">14</div><div class="label">अध्याय</div></div>
+        <div class="stat"><div class="num">500</div><div class="label">संस्कृत श्लोक</div></div>
+        <div class="stat"><div class="num">7</div><div class="label">शास्त्रीय ग्रह</div></div>
+        <div class="stat"><div class="num">26+</div><div class="label">जीवित टीकाएँ</div></div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <p>सूर्य सिद्धान्त भारतीय खगोलशास्त्र की सबसे पुरानी जीवित रचनाओं में से एक है, जो संक्षिप्त संस्कृत श्लोकों में रची गई है — कंठस्थ करने और पाठ करने के लिए, किसी आधुनिक पाठ्यपुस्तक की तरह पढ़ने के लिए नहीं। यह पूर्णतः भूकेन्द्रीय मॉडल पर आधारित है: पृथ्वी केंद्र में स्थिर रहती है, जबकि सूर्य, चंद्रमा और पाँच दृश्य ग्रह — बुध, शुक्र, मंगल, बृहस्पति और शनि — उसकी परिक्रमा करते हैं। इसमें अरुण, वरुण या यम ग्रह का कोई उल्लेख नहीं है, क्योंकि पृथ्वी पर तब तक किसी ने इन्हें खोजा ही नहीं था।</p>
+          <p>इतिहासकार इस ग्रंथ के वर्तमान रूप का काल चौथी से नौवीं शताब्दी ईस्वी के बीच मानते हैं, और कई विद्वान लगभग 800 ईस्वी में हुए एक संशोधन की ओर इशारा करते हैं। आज यह मुख्यतः पंद्रहवीं शताब्दी की एक ताड़पत्र पांडुलिपि और टीकाओं की एक लंबी परंपरा के माध्यम से जाना जाता है — कम से कम 26 नामित टीकाएँ, साथ ही 8 अज्ञातनाम टीकाएँ, जो एक हज़ार वर्षों से अधिक समय तक फैली हैं। लगभग हर टीकाकार ने अध्यायों के क्रम में कुछ न कुछ बदलाव किया, इसीलिए विभिन्न संस्करणों में शीर्षक और क्रमांक थोड़े भिन्न मिलते हैं।</p>
+          <p>इसका प्रभाव भारत की सीमाओं से कहीं आगे तक पहुँचा। आज भी प्रचलित हिंदू पंचांग का सौर भाग इसी की पद्धतियों पर आधारित है, और आठवीं शताब्दी में अब्बासी ख़लीफ़ा अल-मंसूर के शासनकाल में अरबी में अनुवादित होने वाली केवल दो संस्कृत रचनाओं में यह एक थी — जिसने मध्यकालीन इस्लामी खगोलशास्त्र को सीधे प्रभावित किया।</p>
+        </div>
+        <div class="pull-card">
+          <div class="tag">मूल 18 सिद्धान्तों में से</div>
+          <p>तेरह पूरी तरह इतिहास में खो गए। सूर्य सिद्धान्त बचा रहा क्योंकि इसकी प्रतिलिपि बनाई गई, इसे पढ़ाया गया, और इस पर किसी भी अन्य सिद्धान्त से अधिक वाद-विवाद हुआ।</p>
+          <div class="src">— D. Pingree के संस्कृत खगोलीय साहित्य सर्वेक्षण के अनुसार</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="chapters">
+    <div class="wrap">
+      <div class="eyebrow">संरचना</div>
+      <h2>चौदह अध्याय</h2>
+      <p class="lede">हर अध्याय पिछले अध्याय पर आधारित है — माध्य गति को स्पष्ट गति में सुधारा जाता है, स्पष्ट गति का उपयोग ग्रहणों और युतियों में होता है, और संपूर्ण प्रणाली उन उपकरणों व समय-मानों के साथ पूर्ण होती है जिनसे इसे चलाया जाता था। नीचे दिए शीर्षक प्रचलित बर्गेस अनुवाद के अनुसार हैं।</p>
+
+      <div class="chapter-grid" id="chapterGrid"></div>
+    </div>
+  </section>
+
+  <section id="accuracy">
+    <div class="wrap">
+      <div class="eyebrow">कितना सटीक निकला</div>
+      <h2>बारह सौ वर्ष बाद गणित की जाँच</h2>
+      <p class="lede">हर ग्रह के लिए सूर्य सिद्धान्त एक नाक्षत्र काल देता है — स्थिर तारों के सापेक्ष एक पूर्ण परिक्रमा का समय। यहाँ देखें कि हर ग्रह का मान आधुनिक मापन से कितना भिन्न है।</p>
+
+      <div class="gauge-grid" id="gaugeGrid"></div>
+
+      <div class="year-compare">
+        <h3>एक वर्ष की लंबाई</h3>
+        <div class="year-row"><span>सूर्य सिद्धान्त नाक्षत्र वर्ष</span><span class="v">365 दिन 6 घं 12 मि 36.6 से</span></div>
+        <div class="year-row"><span>आधुनिक नाक्षत्र वर्ष</span><span class="v">365 दिन 6 घं 9 मि 9.8 से</span></div>
+        <div class="year-row"><span>अंतर</span><span class="v">≈ 3.5 मिनट अधिक</span></div>
+        <div class="year-row"><span>इससे होने वाला विचलन</span><span class="v">लगभग हर 400 वर्ष में 1 दिन</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sine">
+    <div class="wrap">
+      <div class="eyebrow">अध्याय 2, व्यवहार में</div>
+      <h2>विश्व की सबसे पुरानी ज्या सारणी</h2>
+      <p class="lede">पश्चिम में "साइन" नाम मिलने से सदियों पहले, इस ग्रंथ ने 90° के चतुर्थांश को 24 बराबर भागों में बाँटा और हर भाग को 3438 इकाई की त्रिज्या के अनुपात में सारणीबद्ध किया। नीचे स्लाइडर खिसकाकर देखें कि ये प्राचीन मान आज के कैलकुलेटर से कितने मिलते हैं।</p>
+
+      <div class="sine-box">
+        <input type="range" id="sineSlider" min="0" max="24" value="12" step="1">
+        <div class="sine-readout">
+          <div><div class="v" id="sineAngle">45.0°</div><div class="l">कोण</div></div>
+          <div><div class="v mono" id="sineRaw">2431</div><div class="l">प्राचीन इकाई / 3438</div></div>
+          <div><div class="v mono" id="sineAncient">0.7071</div><div class="l">प्राचीन ज्या</div></div>
+          <div><div class="v mono" id="sineModern">0.7071</div><div class="l">आज sin(θ)</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="time">
+    <div class="wrap">
+      <div class="eyebrow">अध्याय 3 और 14</div>
+      <h2>अगोचर से एक पूरे दिन तक समय की सीढ़ी</h2>
+      <p class="lede">ग्रंथ समय को दो भागों में बाँटता है — अमूर्त, जो व्यावहारिक उपयोग के लिए बहुत सूक्ष्म है, और मूर्त, जो चार सेकंड की एक स्पंदन से शुरू होकर एक पूर्ण नाक्षत्र दिन तक चलने वाली व्यावहारिक सीढ़ी है।</p>
+
+      <div class="time-tier-label">अमूर्त — व्यावहारिक उपयोग से परे</div>
+      <div class="time-ladder" id="timeLadderTop"></div>
+      <div class="time-tier-label" style="margin-top:30px;">मूर्त — कार्यात्मक मान</div>
+      <div class="time-ladder" id="timeLadderMain"></div>
+    </div>
+  </section>
+
+  <section id="cosmos">
+    <div class="wrap">
+      <div class="eyebrow">अध्याय 12</div>
+      <h2>विश्व-रचना कहाँ सही उतरी — और कहाँ नहीं</h2>
+      <p class="lede">ग्रंथ स्पष्ट रूप से कहता है कि पृथ्वी आकाश में तैरता एक गोला है, जिसमें न कोई "ऊपर" है न "नीचे" — अपने समय के लिए यह वास्तव में एक तीखा दावा था। योजन नामक प्राचीन दूरी-इकाई में दिए गए इसके भौतिक अनुमान एक अधिक मिश्रित कहानी बताते हैं।</p>
+
+      <div class="cosmos-grid" id="cosmosGrid"></div>
+      <div class="legend">
+        <span><span class="swatch" style="background:var(--brass);opacity:.55;"></span> सूर्य सिद्धान्त अनुमान</span>
+        <span><span class="swatch" style="background:var(--vermillion);"></span> आधुनिक मापित मान</span>
+      </div>
+
+      <div class="quote-card">
+        "पृथ्वी के हर भाग पर लोग अपने स्थान को सबसे ऊँचा मानते हैं — परन्तु यह गोला अंतरिक्ष में है, जहाँ न कोई ऊपर है न नीचे।" <span class="mono" style="font-style:normal;">— अध्याय 12, बर्गेस अनुवाद से भावानुवादित</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="glossary">
+    <div class="wrap">
+      <div class="eyebrow">शब्दावली</div>
+      <h2>जानने योग्य दस शब्द</h2>
+      <dl class="gloss-grid" id="glossaryGrid"></dl>
+    </div>
+  </section>
+
+  <section id="quiz">
+    <div class="wrap">
+      <div class="eyebrow">स्वयं को परखें</div>
+      <h2>सूर्य सिद्धान्त पर दस प्रश्न</h2>
+      <p class="lede">न कोई टाइमर, न अनुमान लगाने पर कोई दंड — बस यह जाँचने का एक संक्षिप्त तरीका कि कितना याद रहा।</p>
+      <div id="quizGrid" style="margin-top:32px;"></div>
+      <button class="quiz-btn" id="quizCheck">मेरे उत्तर जाँचें</button>
+      <div class="quiz-score" id="quizScore"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    यह एक व्याख्यात्मक ऐप के रूप में बनाया गया है, मूल ग्रंथ का विकल्प नहीं। आँकड़े बर्गेस-गांगुली अनुवाद (1935 संस्करण) और उसके विकिपीडिया लेख में संक्षेपित द्वितीयक विद्वत्ता से लिए गए हैं; पारंपरिक अध्याय नाम और सटीक क्रमांकन विभिन्न पांडुलिपि व टीका परंपराओं में भिन्न हो सकते हैं।
+  </div>
+</footer>
+
+<script>
+/* ---------------- DATA ---------------- */
+
+const chapters = [
+  {t:"ग्रहों की माध्य गति", d:"यह अध्याय 43.2 लाख वर्षों के एक महायुग में ग्रहों की चक्रीय गति की गणना से शुरू होता है, और हर ग्रह की औसत दैनिक गति बताता है। यही माध्य देशांतर आगे के हर अध्याय में सुधारे जाते हैं।"},
+  {t:"ग्रहों की स्पष्ट स्थिति", d:"अध्याय 1 की माध्य गति में उपकेंद्र (एपिसाइकिल) और केंद्र-समीकरण सुधार जोड़कर ग्रह की वास्तविक आकाशीय स्थिति निकाली जाती है। इसी अध्याय में वह प्रसिद्ध ज्या सारणी दी गई है — 90° के चतुर्थांश में फैले 24 मान — जिसका उपयोग आगे की हर गणना में होता है।"},
+  {t:"दिशा, स्थान और समय", d:"एक प्राचीन खगोलशास्त्री के लिए व्यावहारिक निर्देश: एक खड़ी शंकु की छाया से दिशा, अपना अक्षांश और दिन का समय कैसे निकालें।"},
+  {t:"ग्रहण, विशेषतः चंद्रग्रहण", d:"पृथ्वी की छाया चंद्रमा पर कैसे पड़ती है, इसकी ज्यामितीय संरचना — चंद्रग्रहण कब होगा, कितने समय तक रहेगा, और कितना गहरा होगा।"},
+  {t:"सूर्यग्रहण में लंबन (पैरालैक्स)", d:"सूर्यग्रहण हर स्थान से अलग दिखता है, क्योंकि देखने के कोण में अंतर (लंबन) होता है। यह अध्याय किसी विशेष स्थान के लिए ग्रहण की भविष्यवाणी हेतु आवश्यक सुधार निकालता है।"},
+  {t:"ग्रहण का चित्रांकन", d:"ग्रहण घटित होने से पहले उसे चित्र के रूप में दिखाने की एक रेखीय विधि — सूर्य, चंद्रमा और पृथ्वी की छाया के सापेक्ष मार्ग व आकार को एक आरेख पर खींचना।"},
+  {t:"ग्रह युति", d:"दो ग्रह आकाश में कब एक-दूसरे के निकट से गुजरते दिखेंगे, और कौन-सा ग्रह दूसरे के सामने से गुजरता प्रतीत होगा, इसकी गणना।"},
+  {t:"नक्षत्र", d:"नक्षत्रों की सूची — वे स्थिर तारा-समूह जिनके सहारे चंद्रमा के मार्ग को मापा जाता है — साथ ही संदर्भ तारों की स्थितियाँ।"},
+  {t:"उदय और अस्त (सूर्य के साथ)", d:"कोई ग्रह सूर्य की चमक में छिपने के बाद फिर कब दिखाई देगा, और फिर कब उसकी चमक में लुप्त होगा — इसकी भविष्यवाणी, जो कई पंचांग पर्वों का आधार है।"},
+  {t:"चंद्रमा का उदय-अस्त और उसकी कलाएँ", d:"चंद्रमा की कलाओं के दौरान उसके अर्धचंद्र 'सींगों' की दिशा और आकार की गणना, जिससे चंद्र मास का आरंभ निश्चित होता है।"},
+  {t:"सूर्य-चंद्र के कुछ अशुभ योग", d:"एक छोटा अध्याय, सूर्य और चंद्रमा की अशुभ स्थितियों पर — जो ज्योतिषीय गणना में प्रयुक्त होती हैं। यहाँ गणितीय खगोलशास्त्र और फलित ज्योतिष एक ही ग्रंथ के दो पहलू बनकर दिखते हैं।"},
+  {t:"सृष्टि-रचना, भूगोल और सृष्टि के आयाम", d:"यह अध्याय बड़ी तस्वीर प्रस्तुत करता है। पृथ्वी को आकाश में तैरता एक गोला बताया गया है, जिसमें न कोई 'ऊपर' है न कोई 'नीचे' — साथ ही पृथ्वी, चंद्रमा और सूर्य के अनुमानित व्यास, और बसे हुए संसार का भूगोल।"},
+  {t:"गोलयंत्र तथा अन्य उपकरण", d:"उस समय के व्यावहारिक उपकरणों का वर्णन — गोलयंत्र, शंकु, जल-घड़ियाँ — जिन्हें तत्कालीन खगोलशास्त्री वास्तव में बनाते और उपयोग करते थे।"},
+  {t:"समय मापने की विभिन्न विधियाँ", d:"ग्रंथ का समापन समय मापने की नौ विधियों से होता है — सौर, चांद्र, नाक्षत्र, सावन, और अन्य — साथ ही सबसे छोटी मापनीय इकाइयों तक, घटिका और नक्षत्र अहोरात्र तक।"}
+];
+
+const sidereal = [
+  {name:"चंद्रमा", ss:27.322, modern:27.32166},
+  {name:"बुध", ss:87.97, modern:87.969},
+  {name:"शुक्र", ss:224.7, modern:224.701},
+  {name:"मंगल", ss:687, modern:686.98},
+  {name:"बृहस्पति", ss:4332.3, modern:4332.587},
+  {name:"शनि", ss:10765.77, modern:10759.202}
+];
+
+const sineTable = [0,225,449,671,890,1105,1315,1520,1719,1910,2093,2267,2431,2585,2728,2859,2978,3084,3177,3256,3321,3372,3409,3431,3438];
+const RADIUS_UNIT = 3438;
+
+const timeAmurta = [
+  {name:"त्रुटि", modern:"≈ 29.6 माइक्रोसेकंड", note:"सबसे छोटी नामित इकाई — 1/33750 सेकंड के रूप में परिभाषित; ग्रंथ इस स्तर को व्यवहार में मापने योग्य नहीं मानता।"}
+];
+const timeMurta = [
+  {name:"प्राण", modern:"4 सेकंड", note:"वह आधार स्पंदन जिस पर पूरी व्यावहारिक माप-प्रणाली टिकी है।"},
+  {name:"पल", modern:"24 सेकंड", note:"6 प्राण।"},
+  {name:"घटिका", modern:"24 मिनट", note:"60 पल — आज भी कुछ भारतीय पंचांगों में प्रयुक्त।"},
+  {name:"नक्षत्र अहोरात्र", modern:"1 नाक्षत्र दिन", note:"60 घटिका — स्थिर तारों के सापेक्ष एक पूर्ण परिक्रमण।"}
+];
+
+const cosmos = [
+  {name:"पृथ्वी का व्यास", ssLow:12800, ssHigh:24000, actual:12756},
+  {name:"चंद्रमा का व्यास", ssLow:3840, ssHigh:7200, actual:3475},
+  {name:"पृथ्वी–चंद्र दूरी", ssLow:412800, ssHigh:774000, actual:384400},
+  {name:"सूर्य का व्यास", ssLow:52000, ssHigh:97509, actual:1392000}
+];
+
+const glossary = [
+  {t:"सिद्धान्त", d:"\"स्थापित निष्कर्ष\" — खगोलीय सिद्धांतों का प्रामाणिक ग्रंथ, जिसे सामान्यतः किसी दिव्य या पौराणिक स्रोत से जोड़ा जाता है।"},
+  {t:"ग्रह", d:"शब्दशः \"पकड़ने वाला\" — ग्रंथ द्वारा गणना किए गए सात शास्त्रीय खगोलीय पिंड: सूर्य, चंद्र, बुध, शुक्र, मंगल, बृहस्पति, शनि।"},
+  {t:"युग", d:"एक ब्रह्माण्डीय काल-खंड। ग्रंथ 43.2 लाख वर्षों के महायुग में गणना करता है, जिसके अंत में सभी ग्रहों की गति पुनः संरेखित होने की बात कही गई है।"},
+  {t:"योजन", d:"दूरी की एक प्राचीन इकाई, जो काल और क्षेत्र के अनुसार लगभग 8–15 किमी आँकी जाती है — ब्रह्माण्डीय दूरियों के लिए ग्रंथ की मुख्य माप-इकाई।"},
+  {t:"नक्षत्र", d:"27 या 28 चंद्र-मंडलों में से एक — चंद्रमा के मार्ग पर स्थित स्थिर तारा-समूह, जो आकाशीय मील के पत्थर का काम करते हैं।"},
+  {t:"घटिका", d:"लगभग 24 मिनट की एक इकाई — एक नाक्षत्र दिन का 1/60वाँ भाग — आज भी कुछ पारंपरिक भारतीय पंचांगों में प्रयुक्त।"},
+  {t:"अहोरात्र", d:"एक पूर्ण दिन-रात्रि चक्र; \"नक्षत्र अहोरात्र\" विशेष रूप से एक नाक्षत्र दिन को कहते हैं।"},
+  {t:"भूगोल", d:"शब्दशः \"पृथ्वी-गोला\" — गोल पृथ्वी के लिए ग्रंथ का शब्द।"},
+  {t:"तिथि", d:"एक चंद्र दिवस — साइनॉडिक मास का लगभग 1/30वाँ भाग — जिस पर हिंदू चंद्र पंचांग आधारित है।"},
+  {t:"राशि", d:"राशि-चक्र का 30° भाग — जिसे सामान्यतः \"राशि\" (sign) कहा जाता है।"}
+];
+
+const quiz = [
+  {q:"सूर्य सिद्धान्त में कुल कितने अध्याय हैं?", opts:["10","12","14","18"], a:2},
+  {q:"परंपरा के अनुसार इस ग्रंथ को किसने प्रकट किया?", opts:["ऋषि व्यास","सूर्यदेव के एक दूत ने","चंद्रदेव","आर्यभट स्वयं"], a:1},
+  {q:"यह ग्रंथ किस प्रकार के खगोलीय मॉडल पर आधारित है?", opts:["सूर्यकेन्द्री","भूकेन्द्री","समतल पृथ्वी","बहु-सूर्य मॉडल"], a:1},
+  {q:"चंद्रमा के नाक्षत्र काल में सूर्य सिद्धान्त का मान आधुनिक मान से कितना भिन्न है?", opts:["कई दिन","लगभग एक सेकंड","एक पूरा महीना","पूर्णतः समान"], a:1},
+  {q:"बड़ी दूरियों के लिए ग्रंथ किस प्राचीन इकाई का उपयोग करता है?", opts:["मील","योजन","पारसेक","हाथ"], a:1},
+  {q:"इसके आकार/दूरी संबंधी अनुमानों में से कौन-सा वास्तविकता से सबसे अधिक भिन्न था?", opts:["चंद्रमा का व्यास","पृथ्वी का व्यास","सूर्य का व्यास","कोई नहीं — सभी सटीक थे"], a:2},
+  {q:"अध्याय 3 में दिशा और समय जानने के लिए किस उपकरण का उपयोग होता है?", opts:["दूरबीन","शंकु (छाया-यष्टि)","दिक्सूचक","सेक्सटेंट"], a:1},
+  {q:"इसका नाक्षत्र वर्ष आधुनिक मान से लगभग कितने मिनट अधिक है?", opts:["30 मिनट","लगभग 3.5 मिनट","24 घंटे","यह पूर्णतः सटीक है"], a:1},
+  {q:"इसकी ज्या सारणी में 90° के चतुर्थांश को कितने भागों में बाँटा गया है?", opts:["12","24","90","360"], a:1},
+  {q:"किस आठवीं शताब्दी की ख़लीफ़त ने इस ग्रंथ का अरबी अनुवाद करवाया?", opts:["उस्मानी","अब्बासी","मुग़ल","सफ़वी"], a:1}
+];
+
+/* ---------------- HERO STARFIELD ---------------- */
+(function(){
+  const svg = document.querySelector('.hero-stars');
+  const ns = 'http://www.w3.org/2000/svg';
+  for(let i=0;i<70;i++){
+    const c = document.createElementNS(ns,'circle');
+    const cx = Math.random()*100, cy = Math.random()*100;
+    c.setAttribute('cx', cx+'%'); c.setAttribute('cy', cy+'%');
+    c.setAttribute('r', (Math.random()*1.4+0.4).toFixed(2));
+    c.setAttribute('fill', '#F0E6C8');
+    c.setAttribute('opacity', (Math.random()*0.5+0.2).toFixed(2));
+    const dur = (Math.random()*3+2).toFixed(1);
+    c.innerHTML = `<animate attributeName="opacity" values="${c.getAttribute('opacity')};0.05;${c.getAttribute('opacity')}" dur="${dur}s" repeatCount="indefinite"/>`;
+    svg.appendChild(c);
+  }
+})();
+
+/* ---------------- ORRERY ---------------- */
+(function(){
+  const bodies = [
+    {name:"Moon", period:27.322, r:45, size:5, color:"#E8E2CF"},
+    {name:"Mercury", period:87.97, r:68, size:4.5, color:"#B7AE96"},
+    {name:"Venus", period:224.7, r:91, size:6.5, color:"#E3B05C"},
+    {name:"Sun", period:365.26, r:114, size:9, color:"#D4A437", glow:true},
+    {name:"Mars", period:687, r:137, size:5.5, color:"#B5503A"},
+    {name:"Jupiter", period:4332.6, r:160, size:8, color:"#D7C9A3"},
+    {name:"Saturn", period:10759.2, r:183, size:7, color:"#C9B776", ring:true}
+  ];
+  const baseDur = 4, basePeriod = 27.322;
+  const cx=300, cy=210, ns='http://www.w3.org/2000/svg';
+
+  function el(tag, attrs){
+    const e = document.createElementNS(ns, tag);
+    for(const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  const svg = el('svg', {viewBox:'0 0 600 430', width:'100%', height:'auto', id:'orrerySvg'});
+
+  bodies.forEach(b=>{
+    svg.appendChild(el('circle', {cx, cy, r:b.r, fill:'none', stroke:'#3a4670', 'stroke-width':1, 'stroke-dasharray':'2 5', opacity:0.5}));
+  });
+
+  const earthGlow = el('circle', {cx, cy, r:13, fill:'#2c3a66'});
+  svg.appendChild(earthGlow);
+  svg.appendChild(el('circle', {cx, cy, r:8, fill:'#9bb7d4'}));
+  svg.appendChild(el('circle', {cx, cy, r:8, fill:'none', stroke:'#D4A437', 'stroke-width':1}));
+
+  bodies.forEach(b=>{
+    const dur = (baseDur * Math.sqrt(b.period/basePeriod)).toFixed(2);
+    const g = el('g', {});
+    const at = el('animateTransform', {
+      attributeName:'transform', type:'rotate',
+      from:`0 ${cx} ${cy}`, to:`360 ${cx} ${cy}`,
+      dur: dur+'s', repeatCount:'indefinite'
+    });
+    g.appendChild(at);
+
+    if(b.glow){
+      g.appendChild(el('circle', {cx:cx+b.r, cy, r:b.size+5, fill:b.color, opacity:0.25}));
+    }
+    if(b.ring){
+      g.appendChild(el('ellipse', {cx:cx+b.r, cy, rx:b.size+5, ry:b.size*0.45, fill:'none', stroke:b.color, 'stroke-width':1.2, opacity:0.8}));
+    }
+    g.appendChild(el('circle', {cx:cx+b.r, cy, r:b.size, fill:b.color}));
+    svg.appendChild(g);
+  });
+
+  document.getElementById('orreryMount').appendChild(svg);
+
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    svg.pauseAnimations && svg.pauseAnimations();
+  }
+})();
+
+/* ---------------- NAV ACTIVE STATE ---------------- */
+(function(){
+  const links = document.querySelectorAll('#navInner a');
+  const sections = [...links].map(l=>document.querySelector(l.getAttribute('href')));
+  function onScroll(){
+    let idx = 0;
+    sections.forEach((s,i)=>{ if(s && s.getBoundingClientRect().top < 140) idx = i; });
+    links.forEach(l=>l.classList.remove('active'));
+    links[idx] && links[idx].classList.add('active');
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+
+/* ---------------- CHAPTERS ---------------- */
+(function(){
+  const grid = document.getElementById('chapterGrid');
+  chapters.forEach((c,i)=>{
+    const d = document.createElement('details');
+    d.className = 'chapter';
+    d.innerHTML = `
+      <summary>
+        <span class="ch-num">${i+1}</span>
+        <span class="ch-title">${c.t}</span>
+        <span class="ch-chevron">▸</span>
+      </summary>
+      <div class="ch-body">${c.d}</div>`;
+    grid.appendChild(d);
+  });
+})();
+
+/* ---------------- ACCURACY GAUGES ---------------- */
+(function(){
+  const grid = document.getElementById('gaugeGrid');
+  const range = 0.1;
+  sidereal.forEach(p=>{
+    const err = ((p.ss - p.modern)/p.modern*100);
+    const clamped = Math.max(-range, Math.min(range, err));
+    const angle = (clamped/range)*80;
+    const card = document.createElement('div');
+    card.className = 'gauge-card';
+    card.innerHTML = `
+      <div class="planet-name">${p.name}</div>
+      <svg viewBox="0 0 120 70">
+        <path d="M 14 60 A 46 46 0 0 1 106 60" fill="none" stroke="#cdbb8d" stroke-width="6" stroke-linecap="round"/>
+        <line x1="60" y1="60" x2="${(60+40*Math.sin(angle*Math.PI/180)).toFixed(1)}" y2="${(60-40*Math.cos(angle*Math.PI/180)).toFixed(1)}" stroke="#9B3A2E" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="60" cy="60" r="4" fill="#2B2014"/>
+      </svg>
+      <div class="gauge-err">${err>=0?'+':''}${err.toFixed(3)}%</div>
+      <div class="gauge-err" style="color:var(--ink-soft);font-size:11px;">${p.ss} दिन बनाम ${p.modern} दिन</div>
+    `;
+    grid.appendChild(card);
+  });
+})();
+
+/* ---------------- SINE TABLE ---------------- */
+(function(){
+  const slider = document.getElementById('sineSlider');
+  function update(){
+    const i = parseInt(slider.value,10);
+    const deg = i*3.75;
+    const raw = sineTable[i];
+    const ancient = raw/RADIUS_UNIT;
+    const modern = Math.sin(deg*Math.PI/180);
+    document.getElementById('sineAngle').textContent = deg.toFixed(2)+'°';
+    document.getElementById('sineRaw').textContent = raw;
+    document.getElementById('sineAncient').textContent = ancient.toFixed(4);
+    document.getElementById('sineModern').textContent = modern.toFixed(4);
+  }
+  slider.addEventListener('input', update);
+  update();
+})();
+
+/* ---------------- TIME LADDER ---------------- */
+(function(){
+  const top = document.getElementById('timeLadderTop');
+  const main = document.getElementById('timeLadderMain');
+  timeAmurta.forEach(t=>{
+    top.innerHTML += `<div class="time-step"><div class="name">${t.name}</div><div class="modern mono">${t.modern}</div><div class="note">${t.note}</div></div>`;
+  });
+  timeMurta.forEach(t=>{
+    main.innerHTML += `<div class="time-step"><div class="name">${t.name}</div><div class="modern mono">${t.modern}</div><div class="note">${t.note}</div></div>`;
+  });
+})();
+
+/* ---------------- COSMOS BARS ---------------- */
+(function(){
+  const grid = document.getElementById('cosmosGrid');
+  cosmos.forEach(c=>{
+    const max = Math.max(c.ssHigh, c.actual) * 1.1;
+    const ssLowPct = (c.ssLow/max*100).toFixed(1);
+    const ssHighPct = (c.ssHigh/max*100).toFixed(1);
+    const actualPct = (c.actual/max*100).toFixed(1);
+    const row = document.createElement('div');
+    row.className = 'cosmos-row';
+    row.innerHTML = `
+      <div class="name">${c.name}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="left:${ssLowPct}%;width:${(ssHighPct-ssLowPct).toFixed(1)}%;"></div>
+        <div class="bar-actual" style="left:${actualPct}%;"></div>
+        <div class="bar-label">${c.actual.toLocaleString()} किमी (वास्तविक)</div>
+      </div>`;
+    grid.appendChild(row);
+  });
+})();
+
+/* ---------------- GLOSSARY ---------------- */
+(function(){
+  const grid = document.getElementById('glossaryGrid');
+  glossary.forEach(g=>{
+    grid.innerHTML += `<div class="gloss-item"><dt>${g.t}</dt><dd>${g.d}</dd></div>`;
+  });
+})();
+
+/* ---------------- QUIZ ---------------- */
+(function(){
+  const grid = document.getElementById('quizGrid');
+  quiz.forEach((q,i)=>{
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.dataset.idx = i;
+    let opts = q.opts.map((o,j)=>`
+      <label><input type="radio" name="q${i}" value="${j}"> ${o}</label>
+    `).join('');
+    card.innerHTML = `<div class="quiz-q">${i+1}. ${q.q}</div><div class="quiz-opts">${opts}</div><div class="quiz-feedback"></div>`;
+    grid.appendChild(card);
+  });
+
+  document.getElementById('quizCheck').addEventListener('click', ()=>{
+    let score = 0;
+    quiz.forEach((q,i)=>{
+      const card = grid.children[i];
+      const checked = card.querySelector(`input[name="q${i}"]:checked`);
+      card.classList.remove('correct','incorrect');
+      const fb = card.querySelector('.quiz-feedback');
+      if(!checked){
+        card.classList.add('incorrect');
+        fb.textContent = `उत्तर नहीं दिया गया — सही उत्तर: ${q.opts[q.a]}`;
+        return;
+      }
+      const val = parseInt(checked.value,10);
+      if(val === q.a){
+        score++;
+        card.classList.add('correct');
+        fb.textContent = 'सही उत्तर';
+      } else {
+        card.classList.add('incorrect');
+        fb.textContent = `सही उत्तर: ${q.opts[q.a]}`;
+      }
+    });
+    const scoreEl = document.getElementById('quizScore');
+    scoreEl.style.display = 'block';
+    scoreEl.textContent = `${score} / ${quiz.length} सही`;
+    scoreEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+  });
+})();
+</script>
+</body>
+</html>
